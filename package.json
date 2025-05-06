@@ -6,23 +6,28 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "refetch-resend-openapi": "curl -o ./resend-openapi.yaml https://raw.githubusercontent.com/resend/resend-openapi/main/resend.yaml",
+    "generate-resend-hono": "hono-takibi ./resend-openapi.yaml -o ./src/resend-hono.ts"
   },
   "dependencies": {
+    "@hono/zod-openapi": "^0.19.6",
+    "hono": "^4.7.8",
+    "next": "15.3.1",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "next": "15.3.1"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
-    "@eslint/eslintrc": "^3"
+    "hono-takibi": "^0.6.8",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   },
   "packageManager": "pnpm@10.10.0+sha512.d615db246fe70f25dcfea6d8d73dee782ce23e2245e3c4f6f888249fb568149318637dca73c2c5c8ef2a4ca0d5657fb9567188bfab47f566d1ee6ce987815c39"
 }
