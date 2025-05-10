@@ -1,4 +1,4 @@
-import { serverApp } from "@/src/server/app";
+import { serverApp } from "@/server/app";
 import { handle } from "hono/vercel";
 
 export const GET = handle(serverApp);

@@ -10,11 +10,11 @@ const TagSchema = z.object({ name: z.string(), value: z.string() }).partial().op
 const SendEmailRequestSchema = z
   .object({
     from: z.string(),
-    to: z.array(z.string()),
+    to: z.union([z.string(), z.array(z.string()).min(1).max(50)]),
     subject: z.string(),
-    bcc: z.string().optional(),
-    cc: z.string().optional(),
-    reply_to: z.string().optional(),
+    bcc: z.union([z.string(), z.array(z.string())]).optional(),
+    cc: z.union([z.string(), z.array(z.string())]).optional(),
+    reply_to: z.union([z.string(), z.array(z.string())]).optional(),
     html: z.string().optional(),
     text: z.string().optional(),
     headers: z.object({}).optional(),
