@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import * as dr from "drizzle-orm/sqlite-core";
 
 const uuid = <T extends string>(colName: T) =>
@@ -38,10 +39,19 @@ export const email = dr.sqliteTable(
   ],
 );
 
+export const emailRelations = relations(email, ({ many }) => ({
+  to: many(emailTo),
+  cc: many(emailCc),
+  bcc: many(emailBcc),
+  replyTo: many(emailReplyTo),
+  tags: many(emailTag),
+  attachments: many(emailAttachment),
+}));
+
 const emailId = dr
   .text("email_id")
   .notNull()
-  .references(() => email.id);
+  .references(() => email.id, { onDelete: "cascade" });
 
 const order = dr.integer("order").notNull();
 
@@ -59,6 +69,10 @@ export const emailTo = dr.sqliteTable(
   ],
 );
 
+export const emailToRelations = relations(emailTo, ({ one }) => ({
+  email: one(email, { fields: [emailTo.emailId], references: [email.id] }),
+}));
+
 export const emailCc = dr.sqliteTable(
   "email_cc",
   {
@@ -72,6 +86,10 @@ export const emailCc = dr.sqliteTable(
     }),
   ],
 );
+
+export const emailCcRelations = relations(emailCc, ({ one }) => ({
+  email: one(email, { fields: [emailCc.emailId], references: [email.id] }),
+}));
 
 export const emailBcc = dr.sqliteTable(
   "email_bcc",
@@ -87,6 +105,10 @@ export const emailBcc = dr.sqliteTable(
   ],
 );
 
+export const emailBccRelations = relations(emailBcc, ({ one }) => ({
+  email: one(email, { fields: [emailBcc.emailId], references: [email.id] }),
+}));
+
 export const emailReplyTo = dr.sqliteTable(
   "email_reply_to",
   {
@@ -100,6 +122,10 @@ export const emailReplyTo = dr.sqliteTable(
     }),
   ],
 );
+
+export const emailReplyToRelations = relations(emailReplyTo, ({ one }) => ({
+  email: one(email, { fields: [emailReplyTo.emailId], references: [email.id] }),
+}));
 
 export const emailTag = dr.sqliteTable(
   "email_tag",
@@ -116,6 +142,10 @@ export const emailTag = dr.sqliteTable(
   ],
 );
 
+export const emailTagRelations = relations(emailTag, ({ one }) => ({
+  email: one(email, { fields: [emailTag.emailId], references: [email.id] }),
+}));
+
 export const emailAttachment = dr.sqliteTable("email_attachment", {
   id: uuid("id"),
   emailId: emailId,
@@ -124,3 +154,13 @@ export const emailAttachment = dr.sqliteTable("email_attachment", {
   contentType: dr.text("content_type").notNull(),
   content: dr.blob("content", { mode: "buffer" }).notNull(),
 });
+
+export const emailAttachmentRelations = relations(
+  emailAttachment,
+  ({ one }) => ({
+    email: one(email, {
+      fields: [emailAttachment.emailId],
+      references: [email.id],
+    }),
+  }),
+);

@@ -6,7 +6,15 @@ export interface Email {
   cc: string[];
   bcc: string[];
   replyTo: string[];
-  html: string;
-  text: string;
-  scheduledAt: string;
+  html: string | null;
+  text: string | null;
+  scheduledAt: string | null;
+  headers: Record<string, string> | null;
+  attachments: {
+    id: string;
+    filename: string | null;
+    contentType: string;
+  }[];
+  createdAt: string;
+  updatedAt: string;
 }
