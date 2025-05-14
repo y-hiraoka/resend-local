@@ -210,7 +210,7 @@ const attachmentFromLocal = (
         mime.lookup(filename ?? "") ||
         "application/octet-stream",
     };
-  } catch (error) {
+  } catch {
     throw new SendEmailsError("attachments-decode-failed");
   }
 };

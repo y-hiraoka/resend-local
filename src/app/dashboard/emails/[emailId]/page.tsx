@@ -1,20 +1,18 @@
-import { getEmail } from "@/server/usecases/get-email";
 import {
-  ChevronLeftIcon,
   DownloadIcon,
   MailIcon,
-  MoveLeftIcon,
   PaperclipIcon,
 } from "lucide-react";
 import prettier from "prettier/standalone";
 import parserHtml from "prettier/parser-html";
 import { notFound } from "next/navigation";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Linkify from "linkify-react";
+import cssModules from "./page.module.css";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { syntaxHighlight } from "@/lib/syntax-highliter";
 import { Email } from "@/server/models/email";
 import { Label } from "@/components/ui/label";
-import cssModules from "./page.module.css";
+import { getEmail } from "@/server/usecases/get-email";
 import { Button } from "@/components/ui/button";
 
 const Page: React.FC<{

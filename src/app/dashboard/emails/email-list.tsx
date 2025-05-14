@@ -1,22 +1,21 @@
 "use client";
 
-import { format } from "date-fns";
+import { useQuery } from "@tanstack/react-query";
+import { use } from "react";
+import { EllipsisIcon, MailIcon } from "lucide-react";
+import Link from "next/link";
 import { dashboardAPIClient } from "@/lib/dashboard-api-client";
 import { Email } from "@/server/models/email";
-import { getEmails, GetEmailsResult } from "@/server/usecases/get-emails";
-import { useQuery } from "@tanstack/react-query";
-import { Suspense, use } from "react";
+import { GetEmailsResult } from "@/server/usecases/get-emails";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { EllipsisIcon, MailIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -33,7 +32,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import Link from "next/link";
 
 export const EmailList: React.FC<{
   page: number;

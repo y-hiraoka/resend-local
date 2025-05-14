@@ -1,10 +1,10 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { Button } from "./ui/button";
-import { SidebarTrigger } from "./ui/sidebar";
 import { FaGithub } from "react-icons/fa";
 import { Moon, Sun } from "lucide-react";
+import { Button } from "./ui/button";
+import { SidebarTrigger } from "./ui/sidebar";
 import {
   DropdownMenu,
   DropdownMenuContent,

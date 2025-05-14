@@ -1,5 +1,5 @@
-import { serverApp } from "@/server/dashboard-api-app";
 import { handle } from "hono/vercel";
+import { serverApp } from "@/server/dashboard-api-app";
 
 export const GET = handle(serverApp);
 export const POST = handle(serverApp);

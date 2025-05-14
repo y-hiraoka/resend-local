@@ -1,3 +1,4 @@
+import { OpenAPIHono } from "@hono/zod-openapi";
 import {
   postEmailsRoute,
   getEmailsEmail_idRoute,
@@ -29,7 +30,6 @@ import {
   getBroadcastsIdRoute,
   postBroadcastsIdSendRoute,
 } from "./resend-routes";
-import { OpenAPIHono } from "@hono/zod-openapi";
 import { sendEmails } from "./usecases/send-emails";
 import { ResendResponseError } from "./response-helper";
 import { bearerTokenMiddleware } from "./middlewares/bearer-token";
@@ -43,7 +43,7 @@ class NotImplementedError extends Error {
 }
 
 export const serverApp = new OpenAPIHono({
-  defaultHook: (result, c) => {
+  defaultHook: (result) => {
     if (!result.success) {
       const issueMessages = result.error.issues
         .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
@@ -115,111 +115,111 @@ serverApp.openapi(getEmailsEmail_idRoute, async (c) => {
   });
 });
 
-serverApp.openapi(patchEmailsEmail_idRoute, async (c) => {
+serverApp.openapi(patchEmailsEmail_idRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(postEmailsEmail_idCancelRoute, async (c) => {
+serverApp.openapi(postEmailsEmail_idCancelRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(postEmailsBatchRoute, async (c) => {
+serverApp.openapi(postEmailsBatchRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(postDomainsRoute, async (c) => {
+serverApp.openapi(postDomainsRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(getDomainsRoute, async (c) => {
+serverApp.openapi(getDomainsRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(getDomainsDomain_idRoute, async (c) => {
+serverApp.openapi(getDomainsDomain_idRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(patchDomainsDomain_idRoute, async (c) => {
+serverApp.openapi(patchDomainsDomain_idRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(deleteDomainsDomain_idRoute, async (c) => {
+serverApp.openapi(deleteDomainsDomain_idRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(postDomainsDomain_idVerifyRoute, async (c) => {
+serverApp.openapi(postDomainsDomain_idVerifyRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(postApiKeysRoute, async (c) => {
+serverApp.openapi(postApiKeysRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(getApiKeysRoute, async (c) => {
+serverApp.openapi(getApiKeysRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(deleteApiKeysApi_key_idRoute, async (c) => {
+serverApp.openapi(deleteApiKeysApi_key_idRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(postAudiencesRoute, async (c) => {
+serverApp.openapi(postAudiencesRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(getAudiencesRoute, async (c) => {
+serverApp.openapi(getAudiencesRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(deleteAudiencesIdRoute, async (c) => {
+serverApp.openapi(deleteAudiencesIdRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(getAudiencesIdRoute, async (c) => {
+serverApp.openapi(getAudiencesIdRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(postAudiencesAudience_idContactsRoute, async (c) => {
+serverApp.openapi(postAudiencesAudience_idContactsRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(getAudiencesAudience_idContactsRoute, async (c) => {
+serverApp.openapi(getAudiencesAudience_idContactsRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(deleteAudiencesAudience_idContactsEmailRoute, async (c) => {
+serverApp.openapi(deleteAudiencesAudience_idContactsEmailRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(deleteAudiencesAudience_idContactsIdRoute, async (c) => {
+serverApp.openapi(deleteAudiencesAudience_idContactsIdRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(getAudiencesAudience_idContactsIdRoute, async (c) => {
+serverApp.openapi(getAudiencesAudience_idContactsIdRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(patchAudiencesAudience_idContactsIdRoute, async (c) => {
+serverApp.openapi(patchAudiencesAudience_idContactsIdRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(postBroadcastsRoute, async (c) => {
+serverApp.openapi(postBroadcastsRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(getBroadcastsRoute, async (c) => {
+serverApp.openapi(getBroadcastsRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(deleteBroadcastsIdRoute, async (c) => {
+serverApp.openapi(deleteBroadcastsIdRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(getBroadcastsIdRoute, async (c) => {
+serverApp.openapi(getBroadcastsIdRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(postBroadcastsIdSendRoute, async (c) => {
+serverApp.openapi(postBroadcastsIdSendRoute, async () => {
   throw new NotImplementedError();
 });
 

@@ -1,4 +1,4 @@
-import { asc, count, desc, eq } from "drizzle-orm";
+import { asc, count, desc } from "drizzle-orm";
 import { databaseClient } from "../database/client";
 import {
   email,

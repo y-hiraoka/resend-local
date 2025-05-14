@@ -1,5 +1,8 @@
 "use client";
 
+import { MailIcon } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   Sidebar,
   SidebarContent,
@@ -10,9 +13,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { MailIcon } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 export const AppSidebar: React.FC = () => {
   const pathname = usePathname();

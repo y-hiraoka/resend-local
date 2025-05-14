@@ -1,7 +1,7 @@
-import { getEmails } from "@/server/usecases/get-emails";
 import { z } from "zod";
-import { EmailList } from "./email-list";
 import { Suspense } from "react";
+import { EmailList } from "./email-list";
+import { getEmails } from "@/server/usecases/get-emails";
 
 const SearchParamsSchema = z.object({
   page: z.coerce.number().default(1).catch(1),
