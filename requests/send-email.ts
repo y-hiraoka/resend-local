@@ -1,11 +1,11 @@
 import { resend } from "./resend-client";
 
-const result = await resend.emails.send({
+const sendResult = await resend.emails.send({
   to: ["john@example.com", "doe@gmail.com"],
   from: "example@stin.ink",
   subject: "Hello from Resend",
   html: "<strong>HTML</strong>",
-  text: "Text",
+  text: "Text. see https://resend.com",
   cc: ["cc1@example.com", "cc2@example.com", "cc3@example.com"],
   bcc: ["bcc1@example.com", "bcc2@example.com", "bcc3@example.com"],
   headers: {
@@ -34,4 +34,8 @@ const result = await resend.emails.send({
   ],
 });
 
-console.dir(result, { depth: null });
+console.dir(sendResult, { depth: null });
+
+const retrieveResult = await resend.emails.get(sendResult.data?.id ?? "");
+
+console.dir(retrieveResult, { depth: null });

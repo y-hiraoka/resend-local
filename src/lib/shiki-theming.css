@@ -1,0 +1,25 @@
+@reference "../app/globals.css";
+
+html.light .shiki,
+html.light .shiki span {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg);
+  /* Optional, if you also want font styles */
+  font-style: var(--shiki-light-font-style);
+  font-weight: var(--shiki-light-font-weight);
+  text-decoration: var(--shiki-light-text-decoration);
+}
+
+html.dark .shiki,
+html.dark .shiki span {
+  color: var(--shiki-dark);
+  background-color: var(--shiki-dark-bg);
+  /* Optional, if you also want font styles */
+  font-style: var(--shiki-dark-font-style);
+  font-weight: var(--shiki-dark-font-weight);
+  text-decoration: var(--shiki-dark-text-decoration);
+}
+
+.shiki {
+  @apply p-4 text-sm;
+}

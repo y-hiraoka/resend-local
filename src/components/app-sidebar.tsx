@@ -19,8 +19,8 @@ export const AppSidebar: React.FC = () => {
 
   return (
     <Sidebar>
-      <SidebarHeader>
-        <h1 className="font-extrabold px-2 text-lg">Resend Local</h1>
+      <SidebarHeader className="h-14 justify-center">
+        <h1 className="font-extrabold px-2 text-xl">Resend Local</h1>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>

@@ -17,4 +17,5 @@ export interface Email {
   }[];
   createdAt: string;
   updatedAt: string;
+  lastEvent: "delivered";
 }

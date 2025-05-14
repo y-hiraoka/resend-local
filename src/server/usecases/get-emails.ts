@@ -72,6 +72,7 @@ export const getEmails = async (
       })),
       createdAt: email.createdAt.toISOString(),
       updatedAt: email.updatedAt.toISOString(),
+      lastEvent: "delivered",
     })),
   };
 };

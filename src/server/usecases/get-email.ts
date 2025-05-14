@@ -52,5 +52,6 @@ export const getEmail = async (emailId: string): Promise<Email | null> => {
     })),
     createdAt: selected.createdAt.toISOString(),
     updatedAt: selected.updatedAt.toISOString(),
+    lastEvent: "delivered",
   };
 };

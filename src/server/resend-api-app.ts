@@ -33,6 +33,7 @@ import { OpenAPIHono } from "@hono/zod-openapi";
 import { sendEmails } from "./usecases/send-emails";
 import { ResendResponseError } from "./response-helper";
 import { bearerTokenMiddleware } from "./middlewares/bearer-token";
+import { getEmail } from "./usecases/get-email";
 
 class NotImplementedError extends Error {
   constructor() {
@@ -93,7 +94,25 @@ serverApp.openapi(postEmailsRoute, async (c) => {
 });
 
 serverApp.openapi(getEmailsEmail_idRoute, async (c) => {
-  throw new NotImplementedError();
+  const email = await getEmail(c.req.param("email_id"));
+  if (!email) {
+    throw new ResendResponseError(404, "not_found", "Email not found");
+  }
+
+  return c.json({
+    object: "email",
+    id: email.id,
+    to: email.to,
+    from: email.from,
+    created_at: email.createdAt,
+    subject: email.subject,
+    html: email.html,
+    text: email.text,
+    bcc: email.bcc,
+    cc: email.cc,
+    reply_to: email.replyTo,
+    last_event: email.lastEvent,
+  });
 });
 
 serverApp.openapi(patchEmailsEmail_idRoute, async (c) => {
