@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# resend-local
 
-## Getting Started
+A local emulator for the [Resend](https://resend.com) email API.
 
-First, run the development server:
+Inspired by [`aws-ses-v2-local`](https://github.com/domdomegg/aws-ses-v2-local), this tool provides a local server that receives email send requests and displays the email content (HTML, subject, from/to, etc.) via a browser-based UI — without sending real emails.
+
+## Usage
+
+You can start the server with:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npx resend-local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Or, if you're using pnpm:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm dlx resend-local
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+You can specify the port with the `-p` or `--port` option (default is `8005`):
 
-## Learn More
+```bash
+npx resend-local -p 8080
+```
 
-To learn more about Next.js, take a look at the following resources:
+To use the local server, set the `RESEND_BASE_URL` environment variable in your application:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+RESEND_BASE_URL=http://localhost:8005 your-app
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+For example, if you're using Node.js:
 
-## Deploy on Vercel
+```bash
+RESEND_BASE_URL=http://localhost:8005 node your-app.js
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+In a Next.js project, you can add it to `.env.local`:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+RESEND_BASE_URL=http://localhost:8005
+```
+
+## Features
+
+- Accepts email send requests compatible with the Resend API
+- Displays email content (HTML body, subject, from/to) in a web UI
+- Allows previewing emails without sending them
+- Supports custom port configuration via `--port` option
+- Useful for local development and testing
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
