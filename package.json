@@ -27,7 +27,9 @@
     "drizzle:push": "drizzle-kit push",
     "refetch-resend-openapi": "curl -o ./resend-openapi.yaml https://raw.githubusercontent.com/resend/resend-openapi/main/resend.yaml",
     "generate-resend-hono": "hono-takibi ./resend-openapi.yaml -o ./src/server/resend-routes.ts",
-    "requests": "RESEND_BASE_URL=http://localhost:3000 pnpm tsx"
+    "requests": "RESEND_BASE_URL=http://localhost:8005 pnpm tsx",
+    "changeset:version": "changeset version && pnpm install --lockfile-only",
+    "changeset:publish": "pnpm run build && pnpm exec changeset publish"
   },
   "dependencies": {
     "@hono/zod-openapi": "^0.19.6",
