@@ -123,8 +123,34 @@ serverApp.openapi(postEmailsEmail_idCancelRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(postEmailsBatchRoute, async () => {
-  throw new NotImplementedError();
+serverApp.openapi(postEmailsBatchRoute, async (c) => {
+  const payload = c.req.valid("json");
+  const sendResult = await sendEmails(
+    payload.map((email) => ({
+      from: email.from,
+      to: email.to,
+      subject: email.subject,
+      bcc: email.bcc,
+      cc: email.cc,
+      scheduledAt: email.scheduled_at,
+      replyTo: email.reply_to,
+      html: email.html,
+      text: email.text,
+      headers: email.headers,
+      attachments: email.attachments,
+      tags: email.tags,
+    })),
+  );
+
+  if (sendResult.success) {
+    return c.json({ data: sendResult.emailIds.map((id) => ({ id })) });
+  }
+
+  throw new ResendResponseError(
+    422,
+    "invalid_attachment",
+    "Attachment must have either a content or path.",
+  );
 });
 
 serverApp.openapi(postDomainsRoute, async () => {
