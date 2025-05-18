@@ -1,10 +1,6 @@
-import {
-  DownloadIcon,
-  MailIcon,
-  PaperclipIcon,
-} from "lucide-react";
+import { DownloadIcon, MailIcon, PaperclipIcon } from "lucide-react";
 import prettier from "prettier/standalone";
-import parserHtml from "prettier/parser-html";
+import prettierPluginHtml from "prettier/plugins/html";
 import { notFound } from "next/navigation";
 import Linkify from "linkify-react";
 import cssModules from "./page.module.css";
@@ -139,7 +135,7 @@ const SyntaxHighlightedHtmlView: React.FC<{
 
   const prettierHtml = await prettier.format(html ?? "", {
     parser: "html",
-    plugins: [parserHtml],
+    plugins: [prettierPluginHtml],
   });
 
   const prettierSyntaxHighlightedHtml = await syntaxHighlight(
