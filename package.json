@@ -6,6 +6,19 @@
     "dist"
   ],
   "bin": "./dist/starter.mjs",
+  "description": "A local emulator for Resend API.",
+  "author": {
+    "name": "y-hiraoka",
+    "url": "https://github.com/y-hiraoka"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/y-hiraoka/resend-local"
+  },
+  "keywords": [
+    "resend"
+  ],
   "scripts": {
     "dev": "next dev --turbopack --port 8005",
     "build": "tsx build.ts",
