@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const EnvSchema = z.object({
-  DATABASE_URL: z.string().default("./resend-local.sqlite"),
+  DATABASE_URL: z.string().default("file:resend-local.sqlite"),
 });
 
 export const env = EnvSchema.parse({
