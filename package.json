@@ -65,6 +65,7 @@
     "zod": "^3.24.4"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.29.4",
     "@eslint/eslintrc": "^3",
     "@eslint/js": "^9.26.0",
     "@react-email/components": "^0.0.41",
