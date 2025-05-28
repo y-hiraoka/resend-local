@@ -31,7 +31,7 @@ esbuild.buildSync({
   outfile: "dist/app/drizzle.config.ts",
   platform: "node",
   target: "node20",
-  format: "esm",
+  format: "cjs",
 });
 
 esbuild.buildSync({
@@ -41,7 +41,7 @@ esbuild.buildSync({
   outfile: "dist/app/src/server/database/schema.ts",
   platform: "node",
   target: "node20",
-  format: "esm",
+  format: "cjs",
 });
 
 console.log("done!");
