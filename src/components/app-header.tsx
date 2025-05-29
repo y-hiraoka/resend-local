@@ -22,7 +22,7 @@ export const AppHeader: React.FC = () => {
       <div className="flex items-center gap-2">
         <ModeToggle />
         <Button asChild variant="ghost" size="icon">
-          <a href="https://github.com/y-hiraoka" target="_blank">
+          <a href="https://github.com/y-hiraoka/resend-local" target="_blank">
             <FaGithub className="size-5" />
           </a>
         </Button>
