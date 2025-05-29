@@ -1,5 +1,11 @@
 # resend-local
 
+## 0.0.3
+
+### Patch Changes
+
+- 186598d: this lib no longer push drizzle schema at runtime
+
 ## 0.0.2
 
 ### Patch Changes
