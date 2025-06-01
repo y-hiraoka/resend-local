@@ -34,6 +34,7 @@ import { sendEmails } from "./usecases/send-emails";
 import { ResendResponseError } from "./response-helper";
 import { bearerTokenMiddleware } from "./middlewares/bearer-token";
 import { getEmail } from "./usecases/get-email";
+import { createDomain } from "./usecases/create-domain";
 
 class NotImplementedError extends Error {
   constructor() {
@@ -153,8 +154,35 @@ serverApp.openapi(postEmailsBatchRoute, async (c) => {
   );
 });
 
-serverApp.openapi(postDomainsRoute, async () => {
-  throw new NotImplementedError();
+serverApp.openapi(postDomainsRoute, async (c) => {
+  const created = await createDomain({
+    name: c.req.valid("json").name,
+    region: c.req.valid("json").region ?? "us-east-1",
+  });
+  if (created.success) {
+    return c.json({
+      id: created.domain.id,
+      name: created.domain.name,
+      created_at: created.domain.createdAt,
+      region: created.domain.region,
+      status: created.domain.status,
+      records: created.domain.records,
+    });
+  }
+
+  if (created.reason === "domain_already_exists") {
+    throw new ResendResponseError(
+      409,
+      "validation_error",
+      "Domain already exists.",
+    );
+  }
+
+  throw new ResendResponseError(
+    422,
+    "validation_error",
+    "Invalid domain name.",
+  );
 });
 
 serverApp.openapi(getDomainsRoute, async () => {

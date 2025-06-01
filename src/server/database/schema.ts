@@ -1,5 +1,6 @@
 import { relations } from "drizzle-orm";
 import * as dr from "drizzle-orm/sqlite-core";
+import { Region } from "../models/region";
 
 const uuid = <T extends string>(colName: T) =>
   dr
@@ -164,3 +165,44 @@ export const emailAttachmentRelations = relations(
     }),
   }),
 );
+
+export const domain = dr.sqliteTable("domain", {
+  id: uuid("id"),
+  name: dr.text("name").notNull().unique(),
+  createdAt: timestamps.createdAt,
+  updatedAt: timestamps.updatedAt,
+  region: dr.text("region").notNull().$type<Region>(),
+});
+
+export const domainRelations = relations(domain, ({ many }) => ({
+  records: many(domainRecord),
+}));
+
+export const domainRecord = dr.sqliteTable("domain_record", {
+  id: uuid("id"),
+  domainId: dr
+    .text("domain_id")
+    .notNull()
+    .references(() => domain.id, { onDelete: "cascade" }),
+  record: dr.text("record").notNull().$type<"DKIM" | "SPF">(),
+  name: dr.text("name").notNull(),
+  type: dr.text("type").notNull(),
+  status: dr
+    .text("status")
+    .notNull()
+    .$type<
+      "not_started" | "pending" | "verified" | "failure" | "temporary_failure"
+    >(),
+  value: dr.text("value").notNull(),
+  ttl: dr.text("ttl").notNull(),
+  priority: dr.integer("priority"),
+  createdAt: timestamps.createdAt,
+  update1dAt: timestamps.updatedAt,
+});
+
+export const domainRecordRelations = relations(domainRecord, ({ one }) => ({
+  domain: one(domain, {
+    fields: [domainRecord.domainId],
+    references: [domain.id],
+  }),
+}));
