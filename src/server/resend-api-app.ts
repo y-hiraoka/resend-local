@@ -35,6 +35,8 @@ import { ResendResponseError } from "./response-helper";
 import { bearerTokenMiddleware } from "./middlewares/bearer-token";
 import { getEmail } from "./usecases/get-email";
 import { createDomain } from "./usecases/create-domain";
+import { getDomain } from "./usecases/get-domain";
+import { getDomains } from "./usecases/get-domains";
 
 class NotImplementedError extends Error {
   constructor() {
@@ -185,12 +187,29 @@ serverApp.openapi(postDomainsRoute, async (c) => {
   );
 });
 
-serverApp.openapi(getDomainsRoute, async () => {
-  throw new NotImplementedError();
+serverApp.openapi(getDomainsRoute, async (c) => {
+  const domainsResult = await getDomains({
+    offset: 0,
+    limit: 10000,
+  });
+
+  return c.json({
+    data: domainsResult.domains.map((domain) => ({
+      id: domain.id,
+      name: domain.name,
+      status: domain.status,
+      created_at: domain.createdAt,
+      region: domain.region,
+    })),
+  });
 });
 
-serverApp.openapi(getDomainsDomain_idRoute, async () => {
-  throw new NotImplementedError();
+serverApp.openapi(getDomainsDomain_idRoute, async (c) => {
+  const domain = await getDomain(c.req.param("domain_id"));
+  if (!domain) {
+    throw new ResendResponseError(404, "not_found", "Domain not found");
+  }
+  return c.json(domain);
 });
 
 serverApp.openapi(patchDomainsDomain_idRoute, async () => {

@@ -3,6 +3,7 @@ import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { getEmails } from "./usecases/get-emails";
 import { getAttachmentFile } from "./usecases/get-attachment";
+import { getDomains } from "./usecases/get-domains";
 
 export const serverApp = new Hono()
 
@@ -19,6 +20,20 @@ export const serverApp = new Hono()
     ),
     async (c) => {
       return c.json(await getEmails(c.req.valid("query")));
+    },
+  )
+
+  .get(
+    "/domains",
+    zValidator(
+      "query",
+      z.object({
+        offset: z.coerce.number().default(0),
+        limit: z.coerce.number().default(10),
+      }),
+    ),
+    async (c) => {
+      return c.json(await getDomains(c.req.valid("query")));
     },
   )
 

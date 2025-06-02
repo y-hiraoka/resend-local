@@ -1,6 +1,6 @@
 "use client";
 
-import { MailIcon } from "lucide-react";
+import { GlobeIcon, MailIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -33,6 +33,17 @@ export const AppSidebar: React.FC = () => {
                 <Link href="/dashboard/emails">
                   <MailIcon />
                   <span>Emails</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname.startsWith("/dashboard/domains")}
+              >
+                <Link href="/dashboard/domains">
+                  <GlobeIcon />
+                  <span>Domains</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
