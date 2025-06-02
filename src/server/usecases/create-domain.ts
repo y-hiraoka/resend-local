@@ -1,10 +1,10 @@
-import { generateId } from "@/lib/generate-id";
+import isFQDN from "validator/lib/isFQDN";
 import { databaseClient } from "../database/client";
 import { domain, domainRecord } from "../database/schema";
 import { Domain } from "../models/domain";
-import isFQDN from "validator/lib/isFQDN";
 import { Region } from "../models/region";
 import { isUniqueError } from "../lib/is-unique-error";
+import { generateId } from "@/lib/generate-id";
 
 type CreateDomainPayload = {
   name: string;

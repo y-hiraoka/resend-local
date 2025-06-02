@@ -1,5 +1,4 @@
 import React from "react";
-import { resend } from "./resend-client";
 import {
   Body,
   Button,
@@ -13,6 +12,7 @@ import {
   Section,
   Text,
 } from "@react-email/components";
+import { resend } from "./resend-client";
 
 const StripeWelcomeEmail = () => (
   <Html>
