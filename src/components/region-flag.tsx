@@ -9,7 +9,7 @@ export const RegionFlag: React.FC<{
   region: Region;
   className?: string;
 }> = ({ region, className }) => {
-  const flagMap: Record<Region, any> = {
+  const flagMap: Record<Region, React.ComponentProps<typeof Image>["src"]> = {
     "ap-northeast-1": japanSvg,
     "eu-west-1": irelandSvg,
     "sa-east-1": brazilSvg,

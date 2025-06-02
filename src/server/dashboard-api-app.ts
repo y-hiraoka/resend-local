@@ -4,6 +4,7 @@ import { z } from "zod";
 import { getEmails } from "./usecases/get-emails";
 import { getAttachmentFile } from "./usecases/get-attachment";
 import { getDomains } from "./usecases/get-domains";
+import { getDomain } from "./usecases/get-domain";
 
 export const serverApp = new Hono()
 
@@ -36,6 +37,10 @@ export const serverApp = new Hono()
       return c.json(await getDomains(c.req.valid("query")));
     },
   )
+
+  .get("/domains/:domainId", async (c) => {
+    return c.json(await getDomain(c.req.param("domainId")));
+  })
 
   .get("/attachments/:attachmentId", async (c) => {
     const attachment = await getAttachmentFile(c.req.param("attachmentId"));

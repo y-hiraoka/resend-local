@@ -37,6 +37,15 @@ import { getEmail } from "./usecases/get-email";
 import { createDomain } from "./usecases/create-domain";
 import { getDomain } from "./usecases/get-domain";
 import { getDomains } from "./usecases/get-domains";
+import { Domain } from "./models/domain";
+import { verifyDomain } from "./usecases/verify-domain";
+import { deleteDomain } from "./usecases/delete-domain";
+
+export type HonoContextType = {
+  Variables: {
+    domain: Domain;
+  };
+};
 
 class NotImplementedError extends Error {
   constructor() {
@@ -45,7 +54,7 @@ class NotImplementedError extends Error {
   }
 }
 
-export const serverApp = new OpenAPIHono({
+export const serverApp = new OpenAPIHono<HonoContextType>({
   defaultHook: (result) => {
     if (!result.success) {
       const issueMessages = result.error.issues
@@ -204,11 +213,18 @@ serverApp.openapi(getDomainsRoute, async (c) => {
   });
 });
 
-serverApp.openapi(getDomainsDomain_idRoute, async (c) => {
-  const domain = await getDomain(c.req.param("domain_id"));
+serverApp.use("/domains/:domain_id", async (c, next) => {
+  const domainId = c.req.param("domain_id");
+  const domain = await getDomain(domainId);
   if (!domain) {
     throw new ResendResponseError(404, "not_found", "Domain not found");
   }
+  c.set("domain", domain);
+  return next();
+});
+
+serverApp.openapi(getDomainsDomain_idRoute, async (c) => {
+  const domain = c.get("domain");
   return c.json(domain);
 });
 
@@ -216,12 +232,21 @@ serverApp.openapi(patchDomainsDomain_idRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(deleteDomainsDomain_idRoute, async () => {
-  throw new NotImplementedError();
+serverApp.openapi(deleteDomainsDomain_idRoute, async (c) => {
+  await deleteDomain(c.req.param("domain_id"));
+  return c.json({
+    id: c.req.param("domain_id"),
+    object: "domain",
+    deleted: true,
+  });
 });
 
-serverApp.openapi(postDomainsDomain_idVerifyRoute, async () => {
-  throw new NotImplementedError();
+serverApp.openapi(postDomainsDomain_idVerifyRoute, async (c) => {
+  await verifyDomain(c.req.param("domain_id"));
+  return c.json({
+    id: c.req.param("domain_id"),
+    object: "domain",
+  });
 });
 
 serverApp.openapi(postApiKeysRoute, async () => {

@@ -7,7 +7,7 @@ export const DomainStatus: React.FC<{
   return (
     <span
       className={cn(
-        "inline-block px-2 py-1 rounded-sm text-xs font-medium",
+        "inline-block px-2 py-1 rounded-sm text-xs font-medium transition-colors",
         {
           not_started:
             "bg-neutral-500/20 text-neutral-700 dark:text-neutral-400",

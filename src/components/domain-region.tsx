@@ -1,5 +1,5 @@
-import { Domain } from "@/server/models/domain";
 import { RegionFlag } from "./region-flag";
+import { Domain } from "@/server/models/domain";
 
 export const DomainRegion: React.FC<{
   region: Domain["region"];

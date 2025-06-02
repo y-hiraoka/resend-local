@@ -5,6 +5,7 @@ import { Providers } from "./providers";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { AppHeader } from "@/components/app-header";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -42,6 +43,7 @@ export default function RootLayout({
               <AppHeader />
               <div>{children}</div>
             </main>
+            <Toaster position="bottom-right" closeButton richColors />
           </SidebarProvider>
         </Providers>
       </body>
