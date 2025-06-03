@@ -1,5 +1,6 @@
 import { relations } from "drizzle-orm";
 import * as dr from "drizzle-orm/sqlite-core";
+import { Region } from "../models/region";
 
 const uuid = <T extends string>(colName: T) =>
   dr
@@ -164,3 +165,66 @@ export const emailAttachmentRelations = relations(
     }),
   }),
 );
+
+export const domain = dr.sqliteTable("domain", {
+  id: uuid("id"),
+  name: dr.text("name").notNull().unique(),
+  createdAt: timestamps.createdAt,
+  updatedAt: timestamps.updatedAt,
+  region: dr.text("region").notNull().$type<Region>(),
+});
+
+export const domainRelations = relations(domain, ({ many }) => ({
+  records: many(domainRecord),
+  apiKeys: many(apiKey),
+}));
+
+export const domainRecord = dr.sqliteTable("domain_record", {
+  id: uuid("id"),
+  domainId: dr
+    .text("domain_id")
+    .notNull()
+    .references(() => domain.id, { onDelete: "cascade" }),
+  record: dr.text("record").notNull().$type<"DKIM" | "SPF">(),
+  name: dr.text("name").notNull(),
+  type: dr.text("type").notNull(),
+  status: dr
+    .text("status")
+    .notNull()
+    .$type<
+      "not_started" | "pending" | "verified" | "failure" | "temporary_failure"
+    >(),
+  value: dr.text("value").notNull(),
+  ttl: dr.text("ttl").notNull(),
+  priority: dr.integer("priority"),
+  createdAt: timestamps.createdAt,
+  update1dAt: timestamps.updatedAt,
+});
+
+export const domainRecordRelations = relations(domainRecord, ({ one }) => ({
+  domain: one(domain, {
+    fields: [domainRecord.domainId],
+    references: [domain.id],
+  }),
+}));
+
+export const apiKey = dr.sqliteTable("api_key", {
+  id: uuid("id"),
+  name: dr.text("name").notNull(),
+  token: dr.text("token").notNull().unique(),
+  permission: dr
+    .text("permission")
+    .notNull()
+    .$type<"full_access" | "sending_access">(),
+  domainId: dr
+    .text("domain_id")
+    .references(() => domain.id, { onDelete: "cascade" }),
+  createdAt: timestamps.createdAt,
+});
+
+export const apiKeyRelations = relations(apiKey, ({ one }) => ({
+  domain: one(domain, {
+    fields: [apiKey.domainId],
+    references: [domain.id],
+  }),
+}));

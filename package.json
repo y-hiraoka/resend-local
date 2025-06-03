@@ -61,6 +61,7 @@
     "@types/node": "^20",
     "@types/react": "^19.1.4",
     "@types/react-dom": "^19.1.5",
+    "@types/validator": "^13.15.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
@@ -83,12 +84,14 @@
     "react-dom": "^19.1.0",
     "react-icons": "^5.5.0",
     "resend": "^4.5.1",
+    "sonner": "^2.0.5",
     "tailwind-merge": "^3.2.0",
     "tailwindcss": "^4",
     "tsx": "^4.19.4",
     "tw-animate-css": "^1.2.9",
     "typescript": "^5",
     "typescript-eslint": "^8.32.1",
+    "validator": "^13.15.15",
     "zod": "^3.24.4"
   },
   "packageManager": "pnpm@10.10.0+sha512.d615db246fe70f25dcfea6d8d73dee782ce23e2245e3c4f6f888249fb568149318637dca73c2c5c8ef2a4ca0d5657fb9567188bfab47f566d1ee6ce987815c39"

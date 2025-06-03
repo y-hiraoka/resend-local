@@ -34,6 +34,21 @@ import { sendEmails } from "./usecases/send-emails";
 import { ResendResponseError } from "./response-helper";
 import { bearerTokenMiddleware } from "./middlewares/bearer-token";
 import { getEmail } from "./usecases/get-email";
+import { createDomain } from "./usecases/create-domain";
+import { getDomain } from "./usecases/get-domain";
+import { getDomains } from "./usecases/get-domains";
+import { Domain } from "./models/domain";
+import { verifyDomain } from "./usecases/verify-domain";
+import { deleteDomain } from "./usecases/delete-domain";
+import { createAPIKey } from "./usecases/create-api-key";
+import { getAPIKeys } from "./usecases/get-api-keys";
+import { deleteAPIKey } from "./usecases/delete-api-key";
+
+export type HonoContextType = {
+  Variables: {
+    domain: Domain;
+  };
+};
 
 class NotImplementedError extends Error {
   constructor() {
@@ -42,7 +57,7 @@ class NotImplementedError extends Error {
   }
 }
 
-export const serverApp = new OpenAPIHono({
+export const serverApp = new OpenAPIHono<HonoContextType>({
   defaultHook: (result) => {
     if (!result.success) {
       const issueMessages = result.error.issues
@@ -153,40 +168,116 @@ serverApp.openapi(postEmailsBatchRoute, async (c) => {
   );
 });
 
-serverApp.openapi(postDomainsRoute, async () => {
-  throw new NotImplementedError();
+serverApp.openapi(postDomainsRoute, async (c) => {
+  const created = await createDomain({
+    name: c.req.valid("json").name,
+    region: c.req.valid("json").region ?? "us-east-1",
+  });
+  if (created.success) {
+    return c.json({
+      id: created.domain.id,
+      name: created.domain.name,
+      created_at: created.domain.createdAt,
+      region: created.domain.region,
+      status: created.domain.status,
+      records: created.domain.records,
+    });
+  }
+
+  if (created.reason === "domain_already_exists") {
+    throw new ResendResponseError(
+      409,
+      "validation_error",
+      "Domain already exists.",
+    );
+  }
+
+  throw new ResendResponseError(
+    422,
+    "validation_error",
+    "Invalid domain name.",
+  );
 });
 
-serverApp.openapi(getDomainsRoute, async () => {
-  throw new NotImplementedError();
+serverApp.openapi(getDomainsRoute, async (c) => {
+  const domainsResult = await getDomains({
+    offset: 0,
+    limit: 10000,
+  });
+
+  return c.json({
+    data: domainsResult.domains.map((domain) => ({
+      id: domain.id,
+      name: domain.name,
+      status: domain.status,
+      created_at: domain.createdAt,
+      region: domain.region,
+    })),
+  });
 });
 
-serverApp.openapi(getDomainsDomain_idRoute, async () => {
-  throw new NotImplementedError();
+serverApp.use("/domains/:domain_id", async (c, next) => {
+  const domainId = c.req.param("domain_id");
+  const domain = await getDomain(domainId);
+  if (!domain) {
+    throw new ResendResponseError(404, "not_found", "Domain not found");
+  }
+  c.set("domain", domain);
+  return next();
+});
+
+serverApp.openapi(getDomainsDomain_idRoute, async (c) => {
+  const domain = c.get("domain");
+  return c.json(domain);
 });
 
 serverApp.openapi(patchDomainsDomain_idRoute, async () => {
   throw new NotImplementedError();
 });
 
-serverApp.openapi(deleteDomainsDomain_idRoute, async () => {
-  throw new NotImplementedError();
+serverApp.openapi(deleteDomainsDomain_idRoute, async (c) => {
+  await deleteDomain(c.req.param("domain_id"));
+  return c.json({
+    id: c.req.param("domain_id"),
+    object: "domain",
+    deleted: true,
+  });
 });
 
-serverApp.openapi(postDomainsDomain_idVerifyRoute, async () => {
-  throw new NotImplementedError();
+serverApp.openapi(postDomainsDomain_idVerifyRoute, async (c) => {
+  await verifyDomain(c.req.param("domain_id"));
+  return c.json({
+    id: c.req.param("domain_id"),
+    object: "domain",
+  });
 });
 
-serverApp.openapi(postApiKeysRoute, async () => {
-  throw new NotImplementedError();
+serverApp.openapi(postApiKeysRoute, async (c) => {
+  const result = await createAPIKey({
+    name: c.req.valid("json").name,
+    domainId: c.req.valid("json").domain_id,
+    permission: c.req.valid("json").permission ?? "full_access",
+  });
+  return c.json(result);
 });
 
-serverApp.openapi(getApiKeysRoute, async () => {
-  throw new NotImplementedError();
+serverApp.openapi(getApiKeysRoute, async (c) => {
+  const apiKeys = await getAPIKeys({
+    offset: 0,
+    limit: 10000,
+  });
+  return c.json({
+    data: apiKeys.apiKeys.map((apiKey) => ({
+      id: apiKey.id,
+      name: apiKey.name,
+      created_at: apiKey.createdAt,
+    })),
+  });
 });
 
-serverApp.openapi(deleteApiKeysApi_key_idRoute, async () => {
-  throw new NotImplementedError();
+serverApp.openapi(deleteApiKeysApi_key_idRoute, async (c) => {
+  await deleteAPIKey(c.req.param("api_key_id"));
+  return c.newResponse(null, 200);
 });
 
 serverApp.openapi(postAudiencesRoute, async () => {

@@ -1,5 +1,5 @@
-import fs from "fs-extra";
 import { spawnSync } from "node:child_process";
+import fs from "fs-extra";
 import esbuild from "esbuild";
 
 console.log("building the next app");

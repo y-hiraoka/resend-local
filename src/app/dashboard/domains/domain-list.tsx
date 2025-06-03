@@ -2,11 +2,9 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { use } from "react";
-import { EllipsisIcon, MailIcon } from "lucide-react";
+import { EllipsisIcon, GlobeIcon } from "lucide-react";
 import Link from "next/link";
 import { dashboardAPIClient } from "@/lib/dashboard-api-client";
-import { Email } from "@/server/models/email";
-import { GetEmailsResult } from "@/server/usecases/get-emails";
 import {
   Table,
   TableBody,
@@ -17,11 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+
 import {
   getPaginationIndicator,
   Pagination,
@@ -32,28 +26,32 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { GetDomainsResult } from "@/server/usecases/get-domains";
+import { Domain } from "@/server/models/domain";
+import { DomainStatus } from "@/components/domain-status";
+import { DomainRegion } from "@/components/domain-region";
 
-export const EmailList: React.FC<{
+export const DomainList: React.FC<{
   page: number;
   count: number;
-  emailsPromise: Promise<GetEmailsResult>;
-}> = ({ page, count, emailsPromise }) => {
-  const emailsQuery = useQuery({
-    queryKey: ["emails", page, count],
-    initialData: use(emailsPromise),
+  domainsPromise: Promise<GetDomainsResult>;
+}> = ({ page, count, domainsPromise }) => {
+  const domainsQuery = useQuery({
+    queryKey: ["domains", page, count],
+    initialData: use(domainsPromise),
     queryFn: async () => {
-      const response = await dashboardAPIClient["dashboard-api"].emails.$get({
+      const response = await dashboardAPIClient["dashboard-api"].domains.$get({
         query: { offset: String(page - 1), limit: String(count) },
       });
       if (!response.ok) {
-        throw new Error("Failed to fetch emails");
+        throw new Error("Failed to fetch domains");
       }
       return await response.json();
     },
     refetchInterval: 1000,
   });
 
-  const totalPages = Math.ceil(emailsQuery.data.total / count);
+  const totalPages = Math.ceil(domainsQuery.data.total / count);
 
   const paginationIndicators = getPaginationIndicator({
     currentPage: page,
@@ -65,18 +63,18 @@ export const EmailList: React.FC<{
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>To</TableHead>
-            <TableHead>From</TableHead>
-            <TableHead>Subject</TableHead>
-            <TableHead>Sent</TableHead>
+            <TableHead>Domain</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Region</TableHead>
+            <TableHead>Created</TableHead>
             <TableHead>
               <span className="sr-only">Actions</span>
             </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {emailsQuery.data.emails.map((email) => (
-            <EmailListItem key={email.id} email={email} />
+          {domainsQuery.data.domains.map((domain) => (
+            <DomainListItem key={domain.id} domain={domain} />
           ))}
         </TableBody>
         <TableFooter>
@@ -87,8 +85,8 @@ export const EmailList: React.FC<{
                 <span className="font-light">of</span> {totalPages}
               </span>
               <span className="ml-4">
-                {emailsQuery.data.total}{" "}
-                <span className="font-light">emails</span>
+                {domainsQuery.data.total}{" "}
+                <span className="font-light">domains</span>
               </span>
             </TableCell>
           </TableRow>
@@ -128,44 +126,29 @@ export const EmailList: React.FC<{
   );
 };
 
-const EmailListItem: React.FC<{ email: Email }> = ({ email }) => {
+const DomainListItem: React.FC<{ domain: Domain }> = ({ domain }) => {
   return (
     <TableRow>
       <TableCell>
         <div className="flex items-center">
           <span className="inline-grid place-items-center size-7 border rounded-sm mr-2">
-            <MailIcon className="text-muted-foreground size-4" />
+            <GlobeIcon className="text-muted-foreground size-4" />
           </span>
           <Link
             className="underline decoration-dashed underline-offset-2 decoration-muted-foreground hover:decoration-primary transition-colors"
-            href={`/dashboard/emails/${email.id}`}
+            href={`/dashboard/domains/${domain.id}`}
           >
-            {email.to[0]}
+            {domain.name}
           </Link>
-          {email.to.length > 1 && (
-            <Tooltip>
-              <TooltipTrigger className="ml-2">
-                <span className="rounded border text-muted-foreground px-1.5 py-0.5 text-xs block">
-                  +{email.to.length - 1}
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="mb-1">To</p>
-                {email.to.map((to, index) => (
-                  <p key={index} className="font-medium text-foreground">
-                    {to}
-                  </p>
-                ))}
-              </TooltipContent>
-            </Tooltip>
-          )}
         </div>
       </TableCell>
-      <TableCell className="text-xs">{email.from}</TableCell>
-      <TableCell>{email.subject}</TableCell>
-      <TableCell className="text-muted-foreground">
-        {new Date(email.createdAt).toLocaleString()}
+      <TableCell>
+        <DomainStatus status={domain.status} />
       </TableCell>
+      <TableCell>
+        <DomainRegion region={domain.region} />
+      </TableCell>
+      <TableCell>{new Date(domain.createdAt).toLocaleString()}</TableCell>
       <TableCell align="right">
         <Button type="button" variant="ghost" size="icon">
           <EllipsisIcon />
