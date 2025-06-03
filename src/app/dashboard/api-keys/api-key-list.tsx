@@ -1,9 +1,10 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { use } from "react";
-import { EllipsisIcon, GlobeIcon } from "lucide-react";
-import Link from "next/link";
+import { EllipsisIcon, KeyRoundIcon } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
+import { toast } from "sonner";
 import { dashboardAPIClient } from "@/lib/dashboard-api-client";
 import {
   Table,
@@ -26,32 +27,44 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { GetDomainsResult } from "@/server/usecases/get-domains";
-import { Domain } from "@/server/models/domain";
-import { DomainStatus } from "@/components/domain-status";
-import { DomainRegion } from "@/components/domain-region";
+import { APIKey } from "@/server/models/api-key";
+import { GetAPIKeysResult } from "@/server/usecases/get-api-keys";
+import { deleteAPIKey } from "@/lib/resend-api-client";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-export const DomainList: React.FC<{
+export const APIKeyList: React.FC<{
   page: number;
   count: number;
-  domainsPromise: Promise<GetDomainsResult>;
-}> = ({ page, count, domainsPromise }) => {
-  const domainsQuery = useQuery({
-    queryKey: ["domains", page, count],
-    initialData: use(domainsPromise),
+  apiKeysPromise: Promise<GetAPIKeysResult>;
+}> = ({ page, count, apiKeysPromise }) => {
+  const apiKeysQuery = useQuery({
+    queryKey: ["apiKeys", page, count],
+    initialData: use(apiKeysPromise),
     queryFn: async () => {
-      const response = await dashboardAPIClient["dashboard-api"].domains.$get({
+      const response = await dashboardAPIClient["dashboard-api"][
+        "api-keys"
+      ].$get({
         query: { offset: String(page - 1), limit: String(count) },
       });
       if (!response.ok) {
-        throw new Error("Failed to fetch domains");
+        throw new Error("Failed to fetch emails");
       }
       return await response.json();
     },
     refetchInterval: 1000,
   });
 
-  const totalPages = Math.ceil(domainsQuery.data.total / count);
+  const totalPages = Math.ceil(apiKeysQuery.data.total / count);
 
   const paginationIndicators = getPaginationIndicator({
     currentPage: page,
@@ -63,9 +76,10 @@ export const DomainList: React.FC<{
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>Name</TableHead>
+            <TableHead>Token</TableHead>
+            <TableHead>Permission</TableHead>
             <TableHead>Domain</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Region</TableHead>
             <TableHead>Created</TableHead>
             <TableHead>
               <span className="sr-only">Actions</span>
@@ -73,20 +87,20 @@ export const DomainList: React.FC<{
           </TableRow>
         </TableHeader>
         <TableBody>
-          {domainsQuery.data.domains.map((domain) => (
-            <DomainListItem key={domain.id} domain={domain} />
+          {apiKeysQuery.data.apiKeys.map((apiKey) => (
+            <APIKeyListItem key={apiKey.id} apiKey={apiKey} />
           ))}
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={5}>
+            <TableCell colSpan={6}>
               <span>
                 <span className="font-light">Page</span> {page}{" "}
                 <span className="font-light">of</span> {totalPages}
               </span>
               <span className="ml-4">
-                {domainsQuery.data.total}{" "}
-                <span className="font-light">domains</span>
+                {apiKeysQuery.data.total}{" "}
+                <span className="font-light">keys</span>
               </span>
             </TableCell>
           </TableRow>
@@ -126,33 +140,67 @@ export const DomainList: React.FC<{
   );
 };
 
-const DomainListItem: React.FC<{ domain: Domain }> = ({ domain }) => {
+const APIKeyListItem: React.FC<{ apiKey: APIKey }> = ({ apiKey }) => {
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteAPIKey(apiKey.id),
+    onSuccess: () => {
+      toast.success("API key deleted successfully");
+    },
+  });
+
   return (
     <TableRow>
       <TableCell>
         <div className="flex items-center">
           <span className="inline-grid place-items-center size-7 border rounded-sm mr-2">
-            <GlobeIcon className="text-muted-foreground size-4" />
+            <KeyRoundIcon className="text-muted-foreground size-4" />
           </span>
-          <Link
-            className="underline decoration-dashed underline-offset-2 decoration-muted-foreground hover:decoration-primary transition-colors"
-            href={`/dashboard/domains/${domain.id}`}
-          >
-            {domain.name}
-          </Link>
+          {apiKey.name}
         </div>
       </TableCell>
       <TableCell>
-        <DomainStatus status={domain.status} />
+        <Tooltip>
+          <TooltipTrigger>
+            <span className="font-mono text-xs">
+              {apiKey.token.slice(0, 10)}...
+            </span>
+          </TooltipTrigger>
+          <TooltipContent>
+            <span className="font-mono text-sm">{apiKey.token}</span>
+          </TooltipContent>
+        </Tooltip>
       </TableCell>
       <TableCell>
-        <DomainRegion region={domain.region} />
+        {
+          {
+            full_access: "Full access",
+            sending_access: "Sending access",
+          }[apiKey.permission]
+        }
       </TableCell>
-      <TableCell>{new Date(domain.createdAt).toLocaleString()}</TableCell>
+      <TableCell className="font-mono">{apiKey.domain?.name ?? "-"}</TableCell>
+      <TableCell>
+        {formatDistanceToNow(new Date(apiKey.createdAt), {
+          addSuffix: true,
+        })}
+      </TableCell>
       <TableCell align="right">
-        <Button type="button" variant="ghost" size="icon">
-          <EllipsisIcon />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button type="button" variant="ghost" size="icon">
+              <EllipsisIcon />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              variant="destructive"
+              onClick={() => deleteMutation.mutate()}
+              disabled={deleteMutation.isPending}
+            >
+              Delete API Key
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </TableCell>
     </TableRow>
   );

@@ -40,6 +40,9 @@ import { getDomains } from "./usecases/get-domains";
 import { Domain } from "./models/domain";
 import { verifyDomain } from "./usecases/verify-domain";
 import { deleteDomain } from "./usecases/delete-domain";
+import { createAPIKey } from "./usecases/create-api-key";
+import { getAPIKeys } from "./usecases/get-api-keys";
+import { deleteAPIKey } from "./usecases/delete-api-key";
 
 export type HonoContextType = {
   Variables: {
@@ -249,16 +252,32 @@ serverApp.openapi(postDomainsDomain_idVerifyRoute, async (c) => {
   });
 });
 
-serverApp.openapi(postApiKeysRoute, async () => {
-  throw new NotImplementedError();
+serverApp.openapi(postApiKeysRoute, async (c) => {
+  const result = await createAPIKey({
+    name: c.req.valid("json").name,
+    domainId: c.req.valid("json").domain_id,
+    permission: c.req.valid("json").permission ?? "full_access",
+  });
+  return c.json(result);
 });
 
-serverApp.openapi(getApiKeysRoute, async () => {
-  throw new NotImplementedError();
+serverApp.openapi(getApiKeysRoute, async (c) => {
+  const apiKeys = await getAPIKeys({
+    offset: 0,
+    limit: 10000,
+  });
+  return c.json({
+    data: apiKeys.apiKeys.map((apiKey) => ({
+      id: apiKey.id,
+      name: apiKey.name,
+      created_at: apiKey.createdAt,
+    })),
+  });
 });
 
-serverApp.openapi(deleteApiKeysApi_key_idRoute, async () => {
-  throw new NotImplementedError();
+serverApp.openapi(deleteApiKeysApi_key_idRoute, async (c) => {
+  await deleteAPIKey(c.req.param("api_key_id"));
+  return c.newResponse(null, 200);
 });
 
 serverApp.openapi(postAudiencesRoute, async () => {

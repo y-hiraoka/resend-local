@@ -14,3 +14,7 @@ export const verifyDomain = async (domainId: string): Promise<void> => {
 export const deleteDomain = async (domainId: string): Promise<void> => {
   await customFetch(`/domains/${domainId}`, { method: "DELETE" });
 };
+
+export const deleteAPIKey = async (apiKeyId: string): Promise<void> => {
+  await customFetch(`/api-keys/${apiKeyId}`, { method: "DELETE" });
+};

@@ -176,6 +176,7 @@ export const domain = dr.sqliteTable("domain", {
 
 export const domainRelations = relations(domain, ({ many }) => ({
   records: many(domainRecord),
+  apiKeys: many(apiKey),
 }));
 
 export const domainRecord = dr.sqliteTable("domain_record", {
@@ -203,6 +204,27 @@ export const domainRecord = dr.sqliteTable("domain_record", {
 export const domainRecordRelations = relations(domainRecord, ({ one }) => ({
   domain: one(domain, {
     fields: [domainRecord.domainId],
+    references: [domain.id],
+  }),
+}));
+
+export const apiKey = dr.sqliteTable("api_key", {
+  id: uuid("id"),
+  name: dr.text("name").notNull(),
+  token: dr.text("token").notNull().unique(),
+  permission: dr
+    .text("permission")
+    .notNull()
+    .$type<"full_access" | "sending_access">(),
+  domainId: dr
+    .text("domain_id")
+    .references(() => domain.id, { onDelete: "cascade" }),
+  createdAt: timestamps.createdAt,
+});
+
+export const apiKeyRelations = relations(apiKey, ({ one }) => ({
+  domain: one(domain, {
+    fields: [apiKey.domainId],
     references: [domain.id],
   }),
 }));

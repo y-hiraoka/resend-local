@@ -1,6 +1,6 @@
 "use client";
 
-import { GlobeIcon, MailIcon } from "lucide-react";
+import { GlobeIcon, KeyRoundIcon, MailIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -20,7 +20,9 @@ export const AppSidebar: React.FC = () => {
   return (
     <Sidebar>
       <SidebarHeader className="h-14 justify-center">
-        <h1 className="font-extrabold px-2 text-xl">Resend Local</h1>
+        <h1 className="font-extrabold px-2 text-xl">
+          <Link href="/dashboard">Resend Local</Link>
+        </h1>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -44,6 +46,17 @@ export const AppSidebar: React.FC = () => {
                 <Link href="/dashboard/domains">
                   <GlobeIcon />
                   <span>Domains</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname.startsWith("/dashboard/api-keys")}
+              >
+                <Link href="/dashboard/api-keys">
+                  <KeyRoundIcon />
+                  <span>API Keys</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
