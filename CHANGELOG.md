@@ -1,5 +1,11 @@
 # resend-local
 
+## 0.0.4
+
+### Patch Changes
+
+- ce7e09a: support domains and api-keys API
+
 ## 0.0.3
 
 ### Patch Changes
