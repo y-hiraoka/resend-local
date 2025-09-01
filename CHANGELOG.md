@@ -1,5 +1,11 @@
 # resend-local
 
+## 0.0.6
+
+### Patch Changes
+
+- 963f7c6: pin package versions
+
 ## 0.0.5
 
 ### Patch Changes
