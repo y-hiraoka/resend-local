@@ -63,7 +63,7 @@ export const serverApp = new Hono()
       return c.text("Attachment not found", 404);
     }
 
-    return c.body(attachment.content, {
+    return c.body(Uint8Array.from(attachment.content), {
       headers: {
         "Content-Type": attachment.contentType,
         "Content-Disposition": `attachment; filename="${attachment.filename}"`,
