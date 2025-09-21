@@ -1,5 +1,11 @@
 # resend-local
 
+## 0.0.7
+
+### Patch Changes
+
+- c6463df: use npm trusted publishing
+
 ## 0.0.6
 
 ### Patch Changes
