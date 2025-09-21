@@ -7,6 +7,10 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
+permissions:
+  contents: write
+  id-token: write
+
 jobs:
   release:
     name: Release
@@ -17,6 +21,9 @@ jobs:
 
       - run: npm install -g corepack@latest
       - run: corepack enable pnpm
+
+      - name: Update npm to latest
+        run: npm install -g npm@latest
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -35,4 +42,3 @@ jobs:
           version: pnpm run changeset:version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
