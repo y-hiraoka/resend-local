@@ -22,14 +22,14 @@ jobs:
       - run: npm install -g corepack@latest
       - run: corepack enable pnpm
 
-      - name: Update npm to latest
-        run: npm install -g npm@latest
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: "pnpm"
+
+      - name: Update npm to latest
+        run: npm install -g npm@latest
 
       - name: Install Dependencies
         run: pnpm install
